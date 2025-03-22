@@ -241,7 +241,9 @@ Mᴇꜱꜱᴀɢᴇ : <code>{}</code>"""
 """ 
    # PLEASE DO NOT REMOVE ANY CREDITS ❤️‍🩹
     
-    CAPTION = """ 📂 <i><a href="https://telegram.me/World4kMovie">{file_name}</a></i>\n\n"""
+    CAPTION = """ 📂 ғɪʟᴇɴᴀᴍᴇ : {file_caption}
+
+<b>⚙️ sɪᴢᴇ : {file_size}\n\n𝖩𝗈𝗂𝗇 ➥ @World4kMovie"""
 
     IMDB_TEMPLATE_TXT = """
 <b>ʜᴇʏ {message.from_user.mention}, ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {search}.
