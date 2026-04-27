@@ -1,4 +1,3 @@
-
 import sys
 import glob
 import importlib
@@ -19,7 +18,6 @@ logging.basicConfig(
 logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
-
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from database.ia_filterdb import Media
@@ -35,7 +33,6 @@ from aiohttp import web
 from plugins import web_server
 
 import asyncio
-from pyrogram import idle
 from lazybot import LazyPrincessBot
 from util.keepalive import ping_server
 from lazybot.clients import initialize_clients
@@ -43,6 +40,7 @@ from lazybot.clients import initialize_clients
 
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
+
 LazyPrincessBot.start()
 loop = asyncio.get_event_loop()
 
@@ -50,50 +48,69 @@ loop = asyncio.get_event_loop()
 async def Lazy_start():
     print('\n')
     print('Initalizing The Movie Provider Bot')
+
     bot_info = await LazyPrincessBot.get_me()
     LazyPrincessBot.username = bot_info.username
+
     await initialize_clients()
+
+    # Load plugins
     for name in files:
-        with open(name) as a:
-            patt = Path(a.name)
+        with open(name):
+            patt = Path(name)
             plugin_name = patt.stem.replace(".py", "")
             plugins_dir = Path(f"plugins/{plugin_name}.py")
-            import_path = "plugins.{}".format(plugin_name)
+            import_path = f"plugins.{plugin_name}"
+
             spec = importlib.util.spec_from_file_location(import_path, plugins_dir)
             load = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(load)
-            sys.modules["plugins." + plugin_name] = load
+            sys.modules[import_path] = load
+
             print("The Movie Provider Imported => " + plugin_name)
+
     if ON_HEROKU:
         asyncio.create_task(ping_server())
+
+    # Database setup
     b_users, b_chats = await db.get_banned()
     temp.BANNED_USERS = b_users
     temp.BANNED_CHATS = b_chats
+
     await Media.ensure_indexes()
+
     me = await LazyPrincessBot.get_me()
     temp.ME = me.id
     temp.U_NAME = me.username
     temp.B_NAME = me.first_name
     LazyPrincessBot.username = '@' + me.username
+
     logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
     logging.info(LOG_STR)
     logging.info(script.LOGO)
+
+    # Time
     tz = pytz.timezone('Asia/Kolkata')
     today = date.today()
     now = datetime.now(tz)
-    time = now.strftime("%H:%M:%S %p")
+    time_now = now.strftime("%H:%M:%S %p")
+
+    # ✅ FIXED BLOCK (no crash)
     if LOG_CHANNEL:
-    try:
-        await LazyPrincessBot.send_message(
-            chat_id=LOG_CHANNEL,
-            text=script.RESTART_TXT.format(today, time)
-        )
-    except Exception as e:
-        print(f"LOG_CHANNEL error: {e}")
+        try:
+            await LazyPrincessBot.send_message(
+                chat_id=LOG_CHANNEL,
+                text=script.RESTART_TXT.format(today, time_now)
+            )
+        except Exception as e:
+            print(f"LOG_CHANNEL error: {e}")
+
+    # Web server
     app = web.AppRunner(await web_server())
     await app.setup()
     bind_address = "0.0.0.0"
     await web.TCPSite(app, bind_address, PORT).start()
+
     await idle()
 
 
