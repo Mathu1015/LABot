@@ -71,7 +71,9 @@ CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/+O5tfW0e4mQc5Njk1')
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/World4kMovie/19') # Tutorial video link for opening shortlink website 
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))
 MSG_ALRT = environ.get('MSG_ALRT', 'ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ : ʟᴇʏᴏɴ')
-LOG_CHANNEL = int(environ.get('LOG_CHANNEL', 'None')) #Log channel id ( make sure bot is admin )
+LOG_CHANNEL = environ.get('LOG_CHANNEL')
+
+LOG_CHANNEL = int(LOG_CHANNEL) if LOG_CHANNEL else None #Log channel id ( make sure bot is admin )
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/LeyonRequest') #Support group link ( make sure bot is admin )
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "True")), True)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
