@@ -83,7 +83,13 @@ async def Lazy_start():
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
     if LOG_CHANNEL:
-    await LazyPrincessBot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
+    try:
+        await LazyPrincessBot.send_message(
+            chat_id=LOG_CHANNEL,
+            text=script.RESTART_TXT.format(today, time)
+        )
+    except Exception as e:
+        print(f"LOG_CHANNEL error: {e}")
     app = web.AppRunner(await web_server())
     await app.setup()
     bind_address = "0.0.0.0"
